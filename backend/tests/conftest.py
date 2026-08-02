@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 # Ensure all models are registered on Base.metadata before create_all runs
 import app.modules.auth.models  # noqa: F401
+import app.modules.nutrition.models  # noqa: F401
 import app.modules.workouts.models  # noqa: F401
 from app.config import get_settings
 from app.core.database import Base
