@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 # Ensure all models are registered on Base.metadata before create_all runs
 import app.modules.auth.models  # noqa: F401
+import app.modules.workouts.models  # noqa: F401
 from app.config import get_settings
 from app.core.database import Base
 from app.core.email import clear_sent_emails
@@ -59,11 +60,13 @@ async def db_engine():
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
         await conn.run_sync(Base.metadata.drop_all)
         await conn.execute(text("DROP TYPE IF EXISTS user_role CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS exercise_category CASCADE"))
         await conn.run_sync(Base.metadata.create_all)
     yield engine
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.execute(text("DROP TYPE IF EXISTS user_role CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS exercise_category CASCADE"))
     await engine.dispose()
 
 
