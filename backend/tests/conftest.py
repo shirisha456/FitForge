@@ -24,6 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 # Ensure all models are registered on Base.metadata before create_all runs
 import app.modules.auth.models  # noqa: F401
 import app.modules.nutrition.models  # noqa: F401
+import app.modules.profile.models  # noqa: F401
 import app.modules.progress.models  # noqa: F401
 import app.modules.workouts.models  # noqa: F401
 from app.config import get_settings
@@ -64,6 +65,8 @@ async def db_engine():
         await conn.execute(text("DROP TYPE IF EXISTS user_role CASCADE"))
         await conn.execute(text("DROP TYPE IF EXISTS exercise_category CASCADE"))
         await conn.execute(text("DROP TYPE IF EXISTS goal_status CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS profile_sex CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS profile_activity_level CASCADE"))
         await conn.run_sync(Base.metadata.create_all)
     yield engine
     async with engine.begin() as conn:
@@ -71,6 +74,8 @@ async def db_engine():
         await conn.execute(text("DROP TYPE IF EXISTS user_role CASCADE"))
         await conn.execute(text("DROP TYPE IF EXISTS exercise_category CASCADE"))
         await conn.execute(text("DROP TYPE IF EXISTS goal_status CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS profile_sex CASCADE"))
+        await conn.execute(text("DROP TYPE IF EXISTS profile_activity_level CASCADE"))
     await engine.dispose()
 
 

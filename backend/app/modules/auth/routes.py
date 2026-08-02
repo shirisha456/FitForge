@@ -16,6 +16,7 @@ from app.modules.auth.schemas import (
     RegisterRequest,
     ResetPasswordRequest,
 )
+from app.modules.profile import service as profile_service
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -132,7 +133,8 @@ async def reset_password(
 @router.get("/me", response_model=None)
 async def me(
     user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> dict:
-    # Profile module doesn't exist yet — has_profile is wired up once it does.
-    body = auth_service.to_me_response(user, has_profile=False)
+    profile_exists = await profile_service.has_profile(db, user)
+    body = auth_service.to_me_response(user, has_profile=profile_exists)
     return {"data": body}
