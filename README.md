@@ -18,13 +18,13 @@ those apps offer is generic, because it isn't reasoning over your real logged hi
 
 **Where existing apps fall short:**
 
-| App | Strong at | Missing |
+| Category | Strong at | Missing |
 |---|---|---|
-| MyFitnessPal | Food/calorie logging, huge food database | Workout tracking is an afterthought; no goal-aware progress view; AI features are paywalled |
-| Strong / Hevy | Workout logging, set/rep/weight history | No nutrition tracking at all |
-| Fitbod | AI-generated workout plans | No nutrition logging, no manual meal tracking |
-| Cronometer | Deep micronutrient tracking | No workout logging |
-| Apple Health / Google Fit | Aggregating data *from* other apps | Doesn't originate structured workout/meal logs itself; no coaching |
+| Calorie/food-logging apps | Food/calorie logging, large food databases | Workout tracking is an afterthought; no goal-aware progress view; AI features are usually paywalled |
+| Workout-logging apps | Set/rep/weight history | No nutrition tracking at all |
+| AI workout-plan generators | AI-generated workout plans | No nutrition logging, no manual meal tracking |
+| Micronutrient trackers | Deep micronutrient detail | No workout logging |
+| Health data aggregators | Pulling data in *from* other apps | Don't originate structured workout/meal logs themselves; no coaching |
 
 **What FitForge does differently:** one data model across workouts, nutrition, and body
 progress, so the AI coach can actually reason over what you've really logged — not give
