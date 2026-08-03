@@ -59,19 +59,61 @@ export function WorkoutForm({
   const exercisesErrorMessage =
     exercisesError && "message" in exercisesError ? (exercisesError.message as string) : undefined;
 
+  const [customRows, setCustomRows] = useState<Set<string>>(new Set());
+
+  function setRowCustom(fieldId: string, isCustom: boolean) {
+    setCustomRows((prev) => {
+      const next = new Set(prev);
+      if (isCustom) next.add(fieldId);
+      else next.delete(fieldId);
+      return next;
+    });
+  }
+
+  async function resolveExerciseId(exercise: WorkoutFormValues["exercises"][number]) {
+    if (exercise.exercise_id) return exercise.exercise_id;
+    const response = await fetch("/api/exercises", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: exercise.exercise_name!.trim() }),
+    });
+    const body = await response.json();
+    if (!response.ok) {
+      throw new Error(body?.error?.message ?? "Failed to create exercise");
+    }
+    return body.data.id as string;
+  }
+
   async function onSubmit(values: WorkoutFormValues) {
     setServerError(null);
+
+    let resolvedExercises: {
+      exercise_id: string;
+      sets: number;
+      reps: number;
+      weight_kg: number | null;
+      notes: string | null;
+    }[];
+    try {
+      resolvedExercises = await Promise.all(
+        values.exercises.map(async (e) => ({
+          exercise_id: await resolveExerciseId(e),
+          sets: e.sets,
+          reps: e.reps,
+          weight_kg: e.weight_kg ? Number(e.weight_kg) : null,
+          notes: e.notes || null,
+        })),
+      );
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Failed to resolve exercises.");
+      return;
+    }
+
     const payload = {
       name: values.name,
       performed_at: values.performed_at,
       notes: values.notes || null,
-      exercises: values.exercises.map((e) => ({
-        exercise_id: e.exercise_id,
-        sets: e.sets,
-        reps: e.reps,
-        weight_kg: e.weight_kg ? Number(e.weight_kg) : null,
-        notes: e.notes || null,
-      })),
+      exercises: resolvedExercises,
     };
 
     const url = workoutId ? `/api/workouts/${workoutId}` : "/api/workouts";
@@ -151,7 +193,14 @@ export function WorkoutForm({
               size="sm"
               className="gap-2"
               onClick={() =>
-                append({ exercise_id: "", sets: 3, reps: 10, weight_kg: "", notes: "" })
+                append({
+                  exercise_id: "",
+                  exercise_name: "",
+                  sets: 3,
+                  reps: 10,
+                  weight_kg: "",
+                  notes: "",
+                })
               }
             >
               <Plus className="h-4 w-4" />
@@ -164,35 +213,72 @@ export function WorkoutForm({
                 No exercises added yet. Add one to get started.
               </p>
             )}
-            {fields.map((field, index) => (
+            {fields.map((arrayField, index) => (
               <div
-                key={field.id}
+                key={arrayField.id}
                 className="grid grid-cols-2 gap-3 rounded-md border border-border p-4 sm:grid-cols-5"
               >
-                <FormField
-                  control={form.control}
-                  name={`exercises.${index}.exercise_id`}
-                  render={({ field }) => (
-                    <FormItem className="col-span-2 sm:col-span-2">
-                      <FormLabel>Exercise</FormLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
+                {customRows.has(arrayField.id) ? (
+                  <FormField
+                    control={form.control}
+                    name={`exercises.${index}.exercise_name`}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 sm:col-span-2">
+                        <FormLabel>Exercise</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select an exercise" />
-                          </SelectTrigger>
+                          <Input placeholder="Type an exercise name" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          {exercises.map((exercise) => (
-                            <SelectItem key={exercise.id} value={exercise.id}>
-                              {exercise.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <button
+                          type="button"
+                          className="text-left text-xs text-muted-foreground underline underline-offset-4"
+                          onClick={() => {
+                            form.setValue(`exercises.${index}.exercise_name`, "");
+                            setRowCustom(arrayField.id, false);
+                          }}
+                        >
+                          Choose from list instead
+                        </button>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name={`exercises.${index}.exercise_id`}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 sm:col-span-2">
+                        <FormLabel>Exercise</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => {
+                            if (value === "__custom__") {
+                              form.setValue(`exercises.${index}.exercise_id`, "");
+                              setRowCustom(arrayField.id, true);
+                              return;
+                            }
+                            field.onChange(value);
+                          }}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select an exercise" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {exercises.map((exercise) => (
+                              <SelectItem key={exercise.id} value={exercise.id}>
+                                {exercise.name}
+                              </SelectItem>
+                            ))}
+                            <SelectItem value="__custom__">+ Type a new exercise</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name={`exercises.${index}.sets`}

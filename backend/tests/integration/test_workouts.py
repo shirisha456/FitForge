@@ -188,3 +188,33 @@ async def test_workout_ownership_enforced(client, exercises):
         f"/api/v1/workouts/{workout_id}", headers=other_headers
     )
     assert delete_response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_create_exercise_new_name(client, exercises):
+    headers = await _auth_headers(client, "creator@example.com")
+    response = await client.post(
+        "/api/v1/exercises", json={"name": "Face Pull", "category": "strength"}, headers=headers
+    )
+    assert response.status_code == 201
+    body = response.json()["data"]
+    assert body["name"] == "Face Pull"
+    assert body["category"] == "strength"
+
+
+@pytest.mark.asyncio
+async def test_create_exercise_default_category(client, exercises):
+    headers = await _auth_headers(client, "creator2@example.com")
+    response = await client.post("/api/v1/exercises", json={"name": "Sled Push"}, headers=headers)
+    assert response.status_code == 201
+    assert response.json()["data"]["category"] == "other"
+
+
+@pytest.mark.asyncio
+async def test_create_exercise_reuses_existing_case_insensitive(client, exercises):
+    headers = await _auth_headers(client, "creator3@example.com")
+    response = await client.post(
+        "/api/v1/exercises", json={"name": "squat"}, headers=headers
+    )
+    assert response.status_code == 201
+    assert response.json()["data"]["id"] == str(exercises["squat"].id)

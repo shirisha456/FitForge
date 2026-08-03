@@ -20,6 +20,11 @@ class ExerciseResponse(BaseModel):
     equipment: str | None = None
 
 
+class ExerciseCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    category: ExerciseCategory = ExerciseCategory.OTHER
+
+
 class WorkoutExerciseCreate(BaseModel):
     exercise_id: uuid.UUID
     sets: int = Field(gt=0, le=50)

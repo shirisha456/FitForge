@@ -4,6 +4,7 @@ import { FormEvent, Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+import { PasswordInput } from "@/components/ui/password-input";
 import { ApiClientError, apiClient } from "@/lib/api-client";
 
 function ResetPasswordContent() {
@@ -57,21 +58,17 @@ function ResetPasswordContent() {
         <p className="text-center text-sm text-muted-foreground">
           Choose a new password for your FitForge account.
         </p>
-        <input
-          type="password"
+        <PasswordInput
           required
           placeholder="New password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded border border-input bg-background px-3 py-2"
         />
-        <input
-          type="password"
+        <PasswordInput
           required
           placeholder="Confirm password"
           value={passwordConfirm}
           onChange={(e) => setPasswordConfirm(e.target.value)}
-          className="w-full rounded border border-input bg-background px-3 py-2"
         />
         {status === "error" && (
           <p className="text-sm text-red-600">{message}</p>

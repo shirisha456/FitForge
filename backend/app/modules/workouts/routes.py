@@ -12,7 +12,7 @@ from app.dependencies import get_current_user, get_db
 from app.modules.auth.models import User
 from app.modules.workouts import service as workouts_service
 from app.modules.workouts.models import ExerciseCategory
-from app.modules.workouts.schemas import WorkoutCreate, WorkoutUpdate
+from app.modules.workouts.schemas import ExerciseCreate, WorkoutCreate, WorkoutUpdate
 
 exercises_router = APIRouter(prefix="/exercises", tags=["exercises"])
 workouts_router = APIRouter(prefix="/workouts", tags=["workouts"])
@@ -26,6 +26,16 @@ async def list_exercises(
 ) -> dict:
     exercises = await workouts_service.list_exercises(db, category)
     return {"data": [workouts_service.to_exercise_response(e) for e in exercises]}
+
+
+@exercises_router.post("", status_code=201)
+async def create_exercise(
+    payload: ExerciseCreate,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    exercise = await workouts_service.get_or_create_exercise(db, payload)
+    return {"data": workouts_service.to_exercise_response(exercise)}
 
 
 @workouts_router.post("", status_code=201)

@@ -5,7 +5,8 @@ from __future__ import annotations
 import uuid
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -13,6 +14,7 @@ from app.core.exceptions import AppException
 from app.modules.auth.models import User
 from app.modules.workouts.models import Exercise, ExerciseCategory, Workout, WorkoutExercise
 from app.modules.workouts.schemas import (
+    ExerciseCreate,
     ExerciseResponse,
     WorkoutCreate,
     WorkoutExerciseCreate,
@@ -31,6 +33,28 @@ async def list_exercises(
         stmt = stmt.where(Exercise.category == category)
     result = await db.scalars(stmt)
     return list(result.all())
+
+
+async def get_or_create_exercise(db: AsyncSession, payload: ExerciseCreate) -> Exercise:
+    """Case-insensitive get-or-create against the shared exercise library."""
+    name = payload.name.strip()
+    existing = await db.scalar(select(Exercise).where(func.lower(Exercise.name) == name.lower()))
+    if existing is not None:
+        return existing
+
+    exercise = Exercise(name=name, category=payload.category)
+    db.add(exercise)
+    try:
+        await db.flush()
+    except IntegrityError:
+        # Lost a race with a concurrent create of the same name.
+        await db.rollback()
+        existing = await db.scalar(
+            select(Exercise).where(func.lower(Exercise.name) == name.lower())
+        )
+        assert existing is not None
+        return existing
+    return exercise
 
 
 async def _validate_exercise_ids(
