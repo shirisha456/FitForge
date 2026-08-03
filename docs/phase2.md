@@ -1,0 +1,32 @@
+# Phase 2 — Workouts
+
+The exercise library and user workout tracking.
+
+## What was built
+
+- **`Exercise`** — a curated, seeded library entry (name, category, muscle group, equipment).
+  Not user-owned; every user reads from the same shared library.
+- **`Workout`** / **`WorkoutExercise`** — a user's logged workout with an ordered list of
+  exercises, each carrying its own sets/reps/weight/notes.
+- Full CRUD for workouts (create, list with date filtering, get, update, delete) plus a
+  read-only exercise-library endpoint with category filtering.
+- **Migration 003** creates all three tables *and* seeds 10 starter exercises (Squat, Bench
+  Press, Deadlift, Overhead Press, Barbell Row, Pull-up, Push-up, Running, Cycling, Plank) via
+  `op.bulk_insert` directly in the migration.
+
+## Ownership enforcement
+
+Every workout read/update/delete checks `workout.user_id == user.id` and returns a generic
+`404 Not Found` — not a `403 Forbidden` — when it doesn't match. This avoids leaking whether a
+given ID exists at all to a user who doesn't own it.
+
+## Correction made during this phase
+
+I initially planned to add a *new* seed script here, believing source had no way to populate
+the `exercises` table. That was wrong — migration 003 already seeds the library via
+`op.bulk_insert`. No new script was needed; the migration was reproduced verbatim.
+
+## Validation
+
+37/37 tests passing (the 28 from Phase 1 plus 9 new workout tests), including exercise
+filtering, unknown-exercise-id rejection, and cross-user ownership checks.

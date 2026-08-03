@@ -1,0 +1,23 @@
+# ADR 003 — Async SQLAlchemy 2.0 with the asyncpg driver
+
+## Status
+Accepted (as observed in source; documented here from code inspection).
+
+## Context
+FastAPI is an async framework end-to-end; a synchronous DB driver would block the event loop on
+every query, defeating the point of running async request handlers at all.
+
+## Decision
+Use SQLAlchemy 2.0's native async support (`create_async_engine`, `AsyncSession`,
+`async_sessionmaker`) with the `asyncpg` driver, connection string
+`postgresql+asyncpg://...`. Every route, service function, and repository call is `async def`
+all the way down — there's no sync/async boundary anywhere in the request path.
+
+## Consequences
+- Every DB call in every service function must be awaited; there's no accidental sync fallback
+  to fall back on.
+- `asyncpg` doesn't support every `psycopg2`-era SQLAlchemy feature (notably some
+  server-side-cursor patterns), but nothing in this codebase's query patterns needed them.
+- Alembic migrations still run synchronously by default — `alembic/env.py` wraps the async
+  engine in `asyncio.run(run_async_migrations())` specifically to bridge that gap, since
+  Alembic's own migration runner isn't async-native.
