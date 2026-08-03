@@ -9,8 +9,15 @@ questions. Built phase-by-phase, one module at a time, each validated end to end
 on. See [docs/case-study.md](docs/case-study.md) for the engineering approach behind it.
 
 ## Screenshots
+<img width="1010" height="747" alt="image" src="https://github.com/user-attachments/assets/6a111d38-c7ee-4be7-8781-e46abb0d6adc" />
 
-_Coming soon._
+
+<img width="1638" height="657" alt="image" src="https://github.com/user-attachments/assets/63e5c09e-c3c2-4eb2-9b77-b1509ac89789" />
+
+<img width="1559" height="530" alt="image" src="https://github.com/user-attachments/assets/d1956bb7-787f-40db-846f-4d85eab61c00" />
+
+<img width="1143" height="768" alt="image" src="https://github.com/user-attachments/assets/b7e13992-2c80-4e25-84fd-98ee49ae7ea2" />
+
 
 ## Stack
 
