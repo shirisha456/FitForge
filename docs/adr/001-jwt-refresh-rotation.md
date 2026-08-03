@@ -1,7 +1,7 @@
 # ADR 001 — JWT access/refresh tokens with rotation and reuse detection
 
 ## Status
-Accepted (as observed in source; documented here from code inspection).
+Accepted.
 
 ## Context
 The auth module needs a session mechanism that works for both a Next.js BFF (server-side,

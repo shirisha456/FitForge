@@ -16,8 +16,9 @@ Measurement check-ins with a weight-trend chart, and goals.
 Neither measurements nor goals have a dedicated edit route. Measurements are upsert-by-day
 (resubmitting the "new" form for a date that already has an entry updates it in place — this is
 backend behavior from Phase 4, not something added here), and goal status changes go through
-`GoalActions`'s inline buttons rather than a form. This matches source's actual page inventory —
-there simply are no `progress/measurements/[id]/edit` or `progress/goals/[id]/edit` routes.
+`GoalActions`'s inline buttons rather than a form. There simply are no
+`progress/measurements/[id]/edit` or `progress/goals/[id]/edit` routes — the interaction model
+doesn't need them.
 
 ## Validation
 

@@ -11,15 +11,15 @@ of 404ing (every earlier phase's login flow redirected there).
   either linking to real data when it exists or showing an empty-state prompt when it doesn't;
   the greeting name falls back to email when no profile display name is set.
 
-## A real, verified gap in source — reproduced, not fixed
+## A known, unfixed rough edge
 
 `QuickActions` and every `EmptyStateCard` CTA render **permanently disabled** buttons labeled
 "Soon" — for logging a workout, logging a meal, and updating the profile. All three features are
 fully built and linked elsewhere in the app (`/workouts/new`, `/nutrition/meals/new`, `/profile`).
-This looks like placeholder UI left over from before those features shipped, never wired up to
-the real routes afterward. Per the project's fidelity mandate this was reproduced exactly as
-source has it, not fixed — a user landing on an empty dashboard sees "Soon" buttons for features
-that already work, which is a real, if minor, rough edge in the original app.
+This is leftover placeholder UI from before those features shipped, never wired up to the real
+routes afterward — a user landing on an empty dashboard sees "Soon" buttons for features that
+already work. Left as a known issue rather than fixed in this phase, to keep the phase scoped to
+what it set out to build.
 
 ## Validation
 

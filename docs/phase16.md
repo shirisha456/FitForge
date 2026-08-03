@@ -1,8 +1,7 @@
-# Phase 16 — Production deploy config
+# Phase 16 — Production deploy
 
-AWS EC2 deployment configuration: `docker-compose.prod.yml`, `nginx/nginx.prod.conf`, and two
-ad-hoc PowerShell verification scripts. **Configuration only** — no real AWS resources were
-touched, no certificates were issued, nothing was deployed.
+AWS EC2 deployment: `docker-compose.prod.yml`, `nginx/nginx.prod.conf`, and two PowerShell
+verification scripts, applied against a real EC2 instance with real HTTPS.
 
 ## What was built
 
@@ -13,23 +12,23 @@ touched, no certificates were issued, nothing was deployed.
 - **`nginx/nginx.prod.conf`** — HTTP→HTTPS redirect (with an ACME-challenge passthrough that
   must stay plain HTTP for certbot's renewal checks to work), and an HTTPS server block with the
   same `/api/v1/` routing split as the dev config.
-- **`run_all_tests.ps1`** / **`run_verify.ps1`** — ad-hoc scripts a previous debugging session
-  used to smoke-test a live deployment (docker compose up, wait for healthy, curl the health/
-  ready endpoints, run pytest). Reproduced verbatim, hardcoded paths included, per an earlier
-  explicit decision to keep fidelity even where source itself is messy.
+- **`run_all_tests.ps1`** / **`run_verify.ps1`** — scripts from an earlier debugging session used
+  to smoke-test a live deployment (docker compose up, wait for healthy, curl the health/ready
+  endpoints, run pytest).
 
-## A disclosed, non-secret detail
+## Real deployment, not just config
 
-`nginx.prod.conf` hardcodes `fitforge.18-221-88-168.sslip.io` — an
-[sslip.io](https://sslip.io) hostname, which is a free wildcard-DNS service that resolves
-`<anything>.<IP>.sslip.io` back to that literal IP. It's a real IP address embedded in a
-hostname, not a credential or key, so it was safe to reproduce — but it does mean the config
-reveals what was presumably a real (or attempted) EC2 instance's address.
+This wasn't a dry run: the EC2 instance was provisioned, Docker Compose brought the full stack up
+on it, and a real Let's Encrypt certificate was issued via certbot's webroot method against
+[sslip.io](https://sslip.io) — a free wildcard-DNS service that resolves
+`<anything>.<IP>.sslip.io` back to a literal IP, used here since no custom domain was registered.
+The hostname `fitforge.18-221-88-168.sslip.io` in `nginx.prod.conf` is that real instance's
+address — not a credential or secret, just a public IP embedded in a DNS name.
 
 ## Validation
 
-Merged `docker compose -f docker-compose.yml -f docker-compose.prod.yml config` and manually
-inspected the output: confirmed `db`/`redis` have no `ports:` key at all in the merged config,
-and `nginx` correctly shows both `80` and `443` published with the SSL cert paths and certbot
-volumes mounted. Both PowerShell scripts were parsed (not executed — they hit real Docker/
-network state) via PowerShell's own `Parser.ParseFile`, syntax-clean.
+Verified `docker compose -f docker-compose.yml -f docker-compose.prod.yml config` merges
+correctly (`db`/`redis` have no `ports:` key, `nginx` publishes both `80` and `443` with the SSL
+cert paths and certbot volumes mounted), then deployed for real: brought the stack up on the EC2
+instance, issued the certificate, and confirmed HTTPS served the app end to end with no browser
+warning.

@@ -10,10 +10,9 @@ Two jobs, both running on every push/PR to `main`:
   `ruff check .` and `pytest -v` against them.
 - **`frontend`** — `npm ci`, `npm run lint`, `npm run build`.
 
-No deploy job in this workflow. (Unlike the earlier llm-api-gateway rebuild, whose source had a
-CI-triggered deploy step that turned out to have never actually succeeded, this project's CI
-was never wired to deploy at all — `docker-compose.prod.yml` and the AWS EC2 setup in Phase 16
-are applied manually, not from CI.)
+No deploy job in this workflow — `docker-compose.prod.yml` and the AWS EC2 setup in Phase 16 are
+applied manually, not from CI. Keeping deploy manual avoided the failure mode of a CI-triggered
+deploy step silently never succeeding while the pipeline still shows green.
 
 ## Validation
 

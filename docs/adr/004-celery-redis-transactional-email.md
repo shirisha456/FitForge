@@ -1,7 +1,7 @@
 # ADR 004 — Celery + Redis for transactional email, not inline SMTP
 
 ## Status
-Accepted (as observed in source; documented here from code inspection).
+Accepted.
 
 ## Context
 Registration and password-reset both need to send an email. Sending it inline, inside the

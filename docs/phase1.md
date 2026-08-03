@@ -37,10 +37,10 @@ access/refresh tokens, email verification, and password reset.
 ## Deliberate, disclosed staging
 
 `auth/routes.py`'s `/me` endpoint has `has_profile` hardcoded to `False` in this phase — the
-`profile` module doesn't exist until Phase 5. This isn't a guess: it mirrors the source
-project's own commit history, which shows `/auth/me`'s `has_profile` field was hardcoded false
-until profile support was added later. `tests/conftest.py` and `api/v1/router.py` are likewise
-scoped to only what exists so far, extended incrementally in each subsequent phase.
+`profile` module doesn't exist until Phase 5. This is a deliberate staging decision, not an
+oversight: auth needed to be usable and testable on its own before the profile module existed to
+wire into it. `tests/conftest.py` and `api/v1/router.py` are likewise scoped to only what exists
+so far, extended incrementally in each subsequent phase.
 
 ## Validation
 

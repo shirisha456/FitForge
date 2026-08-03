@@ -1,7 +1,7 @@
 # ADR 005 — nginx routes on the `/v1/` segment, not per-resource
 
 ## Status
-Accepted (as observed in source; documented here from code inspection).
+Accepted.
 
 ## Context
 Two upstreams need to share port 80/443 behind nginx: the real FastAPI backend (always

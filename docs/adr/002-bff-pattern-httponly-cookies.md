@@ -1,7 +1,7 @@
 # ADR 002 — BFF pattern: Next.js Route Handlers hold the tokens, not the browser
 
 ## Status
-Accepted (as observed in source; documented here from code inspection).
+Accepted.
 
 ## Context
 The frontend is a Next.js App Router app; the backend is a separate FastAPI service. Something

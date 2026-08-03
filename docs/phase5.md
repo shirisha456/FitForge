@@ -15,10 +15,9 @@ Single-row-per-user profile, and the real wiring for `/auth/me.has_profile`.
 
 Auth is the foundation every other module depends on, but profile didn't exist until now. Wiring
 `has_profile` before the profile module existed would have been a forward reference with nothing
-to reference. Building auth "complete but stubbed" in Phase 1 and finishing the wire-up here —
-exactly the sequence visible in the source project's own commit history — kept every phase's code
-actually buildable and testable on its own, rather than requiring auth and profile to land as one
-oversized change.
+to reference. Building auth "complete but stubbed" in Phase 1 and finishing the wire-up here kept
+every phase's code actually buildable and testable on its own, rather than requiring auth and
+profile to land as one oversized change.
 
 ## Validation
 

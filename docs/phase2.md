@@ -22,9 +22,9 @@ given ID exists at all to a user who doesn't own it.
 
 ## Correction made during this phase
 
-I initially planned to add a *new* seed script here, believing source had no way to populate
-the `exercises` table. That was wrong — migration 003 already seeds the library via
-`op.bulk_insert`. No new script was needed; the migration was reproduced verbatim.
+A new seed script was initially planned for this phase, on the assumption that the `exercises`
+table had no way to populate itself. That was wrong — migration 003 already seeds the library
+via `op.bulk_insert`. No new script was needed.
 
 ## Validation
 

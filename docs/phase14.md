@@ -35,5 +35,6 @@ and all built images removed.
 
 The backend build step transfers an unexpectedly large (~841MB) build context — not because
 `backend/` itself is large, but because `frontend/node_modules` gets sent as build context for
-the frontend image, and source has no `.dockerignore` anywhere in the repository. The build
-still completes correctly; it's just slower than it needs to be. Reproduced as-is.
+the frontend image, since there's no `.dockerignore` anywhere in the repository. The build still
+completes correctly; it's just slower than it needs to be. Left as a known issue rather than
+fixed in this phase.

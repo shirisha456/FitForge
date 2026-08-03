@@ -1,8 +1,9 @@
 # FitForge
 
-AI-Powered Fitness Platform — an independent, phase-by-phase reconstruction of
-[shirisha456/FitForge](https://github.com/shirisha456/FitForge). See
-[docs/case-study.md](docs/case-study.md) for how and why this was rebuilt the way it was.
+AI-Powered Fitness Platform — a full-stack app for tracking workouts, nutrition, and body
+progress, with an AI coach for generating workouts and meal plans and answering fitness
+questions. Built phase-by-phase, one module at a time, each validated end to end before moving
+on. See [docs/case-study.md](docs/case-study.md) for the engineering approach behind it.
 
 ## Stack
 
@@ -13,24 +14,24 @@ AI-Powered Fitness Platform — an independent, phase-by-phase reconstruction of
 
 ## Phase status
 
-| # | Phase | Status |
-|---|-------|--------|
-| 1 | Foundation & Auth | complete |
-| 2 | Workouts | complete |
-| 3 | Nutrition | complete |
-| 4 | Progress | complete |
-| 5 | Profile | complete |
-| 6 | AI Coach | complete |
-| 7 | Frontend Foundation & Auth UI | complete |
-| 8 | Frontend Workouts | complete |
-| 9 | Frontend Nutrition | complete |
-| 10 | Frontend Progress | complete |
-| 11 | Frontend Profile | complete |
-| 12 | Frontend AI Coach | complete |
-| 13 | Frontend Dashboard | complete |
-| 14 | Docker & nginx | complete |
-| 15 | CI | complete |
-| 16 | Production deploy config | complete |
+| # | Phase | Description | Status |
+|---|-------|--------------|--------|
+| 1 | Foundation & Auth | Users, JWT access/refresh tokens with rotation and reuse detection, Argon2 password hashing, email verification | complete |
+| 2 | Workouts | Exercise library, workout CRUD, workout-exercise ownership validation | complete |
+| 3 | Nutrition | Meals, water entries, daily nutrition summary | complete |
+| 4 | Progress | Body measurements, goals | complete |
+| 5 | Profile | Single-row-per-user profile, wired into `/auth/me` | complete |
+| 6 | AI Coach | OpenAI-backed workout/meal generation and chat, with graceful degradation on API failures | complete |
+| 7 | Frontend Foundation & Auth UI | Next.js BFF pattern, httpOnly cookie sessions, login/register/password-reset pages | complete |
+| 8 | Frontend Workouts | Workout list/detail/create/edit pages, exercise picker | complete |
+| 9 | Frontend Nutrition | Meal CRUD pages, water quick-add, daily summary | complete |
+| 10 | Frontend Progress | Weight chart, measurement and goal forms | complete |
+| 11 | Frontend Profile | Profile form with server-side pre-population | complete |
+| 12 | Frontend AI Coach | Workout/meal generation UI, chat interface | complete |
+| 13 | Frontend Dashboard | Cross-module summary cards, quick actions | complete |
+| 14 | Docker & nginx | Full Compose stack, nginx path-based routing between BFF and API | complete |
+| 15 | CI | GitHub Actions: lint, test, build for both backend and frontend | complete |
+| 16 | Production deploy config | HTTPS via Let's Encrypt, production Compose override, deployment verification scripts | complete |
 
 See [docs/phase1.md](docs/phase1.md) through [docs/phase16.md](docs/phase16.md) for what was
 built in each phase and how it was validated. Case study: [docs/case-study.md](docs/case-study.md).

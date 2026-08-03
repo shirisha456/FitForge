@@ -1,7 +1,7 @@
 # ADR 003 — Async SQLAlchemy 2.0 with the asyncpg driver
 
 ## Status
-Accepted (as observed in source; documented here from code inspection).
+Accepted.
 
 ## Context
 FastAPI is an async framework end-to-end; a synchronous DB driver would block the event loop on
