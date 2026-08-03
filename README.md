@@ -8,6 +8,50 @@ progress, with an AI coach for generating workouts and meal plans and answering 
 questions. Built phase-by-phase, one module at a time, each validated end to end before moving
 on. See [docs/case-study.md](docs/case-study.md) for the engineering approach behind it.
 
+## Why FitForge
+
+**The problem:** tracking fitness usually means juggling several single-purpose apps — one for
+counting calories, another for logging sets and reps, a spreadsheet for weight over time — none
+of which talk to each other. That means no tool actually knows your full picture: what you ate
+today, what you lifted this week, and how your weight has trended, all at once. Any "coaching"
+those apps offer is generic, because it isn't reasoning over your real logged history.
+
+**Where existing apps fall short:**
+
+| App | Strong at | Missing |
+|---|---|---|
+| MyFitnessPal | Food/calorie logging, huge food database | Workout tracking is an afterthought; no goal-aware progress view; AI features are paywalled |
+| Strong / Hevy | Workout logging, set/rep/weight history | No nutrition tracking at all |
+| Fitbod | AI-generated workout plans | No nutrition logging, no manual meal tracking |
+| Cronometer | Deep micronutrient tracking | No workout logging |
+| Apple Health / Google Fit | Aggregating data *from* other apps | Doesn't originate structured workout/meal logs itself; no coaching |
+
+**What FitForge does differently:** one data model across workouts, nutrition, and body
+progress, so the AI coach can actually reason over what you've really logged — not give
+generic advice — and a single place to see the whole picture instead of cross-referencing three
+apps.
+
+## What building this taught me
+
+- **Modular-by-domain backend architecture** (`auth`, `workouts`, `nutrition`, `progress`,
+  `profile`, `ai`, each with the same `models`/`schemas`/`service`/`routes` shape) kept every
+  feature addition isolated — new modules never risked breaking ones already shipped.
+- **The BFF pattern** (Next.js Route Handlers hold the JWTs in httpOnly cookies; the browser
+  never sees a token) trades a bit of request-hop complexity for meaningfully better session
+  security than storing tokens in `localStorage`.
+- **Third-party API dependencies need designed-for failure modes.** The AI coach degrades
+  gracefully (503 on missing key/quota, 502 on other OpenAI errors) instead of taking the whole
+  app down when an external dependency has a bad day.
+- **Real infrastructure validation catches what unit tests don't.** Several real issues (nginx
+  route shadowing, a Compose port-override that silently no-op'd, a migration that raced its own
+  auto-migrate-on-restart) only surfaced when actually running the full Docker Compose stack —
+  not from the test suite alone.
+- **Production deployment is its own skill set**, separate from writing the app: EC2
+  provisioning, Let's Encrypt via certbot's webroot method, nginx path-based routing between two
+  services, and — as this project's iteration history shows — real deployments involve real
+  friction (a Google Fonts fetch timing out mid-build, git checkouts drifting from what's
+  actually running) that only surface once something is genuinely live.
+
 ## Screenshots
 <img width="1010" height="747" alt="image" src="https://github.com/user-attachments/assets/6a111d38-c7ee-4be7-8781-e46abb0d6adc" />
 
