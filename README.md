@@ -1,9 +1,16 @@
 # FitForge
 
+**Live at: [fitforge.18-221-88-168.sslip.io](https://fitforge.18-221-88-168.sslip.io)** — deployed
+on an AWS EC2 instance behind nginx, with a real Let's Encrypt HTTPS certificate.
+
 AI-Powered Fitness Platform — a full-stack app for tracking workouts, nutrition, and body
 progress, with an AI coach for generating workouts and meal plans and answering fitness
 questions. Built phase-by-phase, one module at a time, each validated end to end before moving
 on. See [docs/case-study.md](docs/case-study.md) for the engineering approach behind it.
+
+## Screenshots
+
+_Coming soon._
 
 ## Stack
 
